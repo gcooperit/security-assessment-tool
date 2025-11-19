@@ -1,0 +1,1675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Awareness Assessment Tool for Small Organizations</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.95;
+            line-height: 1.6;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .intro {
+            background: #f7f9fc;
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 32px;
+            border-left: 4px solid #667eea;
+        }
+
+        .intro h2 {
+            color: #2d3748;
+            margin-bottom: 12px;
+            font-size: 20px;
+        }
+
+        .intro p {
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .domain {
+            background: #ffffff;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 32px;
+            transition: all 0.3s ease;
+        }
+
+        .domain:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+
+        .domain-header {
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .domain-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 36px;
+            font-weight: 700;
+            margin-right: 12px;
+        }
+
+        .domain-title {
+            color: #2d3748;
+            font-size: 22px;
+            font-weight: 700;
+            display: inline;
+        }
+
+        .domain-description {
+            color: #4a5568;
+            font-size: 15px;
+            line-height: 1.6;
+            margin-top: 12px;
+            font-style: italic;
+        }
+
+        .question {
+            background: #f7f9fc;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            color: #2d3748;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            position: relative;
+            padding: 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            background: white;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            background: #f7f9fc;
+        }
+
+        .option input[type="radio"] {
+            margin-right: 12px;
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+            accent-color: #667eea;
+        }
+
+        .option.selected {
+            background: #eef2ff;
+            border-color: #667eea;
+            border-width: 2px;
+        }
+
+        .option-text {
+            color: #2d3748;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+
+        .helper-text {
+            color: #718096;
+            font-size: 13px;
+            margin-top: 8px;
+            padding-left: 4px;
+            font-style: italic;
+        }
+
+        .submit-section {
+            margin-top: 40px;
+            text-align: center;
+            padding: 32px;
+            background: #f7f9fc;
+            border-radius: 12px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 16px 48px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .submit-btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .results {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .score-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .score-value {
+            font-size: 64px;
+            font-weight: 700;
+            margin: 16px 0;
+        }
+
+        .score-label {
+            font-size: 20px;
+            opacity: 0.95;
+        }
+
+        .maturity-level {
+            font-size: 24px;
+            font-weight: 600;
+            margin-top: 16px;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        .section {
+            background: #f7f9fc;
+            padding: 28px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            color: #2d3748;
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-icon {
+            font-size: 28px;
+        }
+
+        .domain-score {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border-left: 4px solid #667eea;
+        }
+
+        .domain-name {
+            font-weight: 600;
+            color: #2d3748;
+            flex: 1;
+        }
+
+        .domain-score-value {
+            font-weight: 700;
+            font-size: 18px;
+            color: #667eea;
+            padding: 4px 12px;
+            background: #eef2ff;
+            border-radius: 6px;
+        }
+
+        .recommendation {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            border-left: 4px solid #10b981;
+        }
+
+        .recommendation h3 {
+            color: #2d3748;
+            font-size: 18px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .recommendation p {
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .recommendation ul {
+            margin-left: 20px;
+            margin-top: 12px;
+        }
+
+        .recommendation li {
+            color: #4a5568;
+            line-height: 1.8;
+            margin-bottom: 8px;
+        }
+
+        .strength {
+            border-left-color: #10b981;
+        }
+
+        .weakness {
+            border-left-color: #ef4444;
+        }
+
+        .improvement {
+            border-left-color: #f59e0b;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .badge-green {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-red {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge-yellow {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .reset-btn {
+            background: #718096;
+            color: white;
+            border: none;
+            padding: 12px 32px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 24px;
+        }
+
+        .reset-btn:hover {
+            background: #4a5568;
+        }
+
+        .progress-indicator {
+            background: #e2e8f0;
+            height: 8px;
+            border-radius: 4px;
+            margin-bottom: 32px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: #4a5568;
+            font-size: 14px;
+            margin-top: 8px;
+            font-weight: 600;
+        }
+
+        .error-message {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            border-left: 4px solid #ef4444;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .content {
+                padding: 24px;
+            }
+            
+            .domain {
+                padding: 20px;
+            }
+            
+            .score-value {
+                font-size: 48px;
+            }
+        }
+
+        .implementation-steps {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 16px;
+        }
+
+        .step {
+            display: flex;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .step:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+            margin-right: 16px;
+        }
+
+        .step-content h4 {
+            color: #2d3748;
+            font-size: 16px;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .step-content p {
+            color: #4a5568;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .note-box {
+            background: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            padding: 16px;
+            border-radius: 8px;
+            margin: 16px 0;
+        }
+
+        .note-box strong {
+            color: #92400e;
+        }
+
+        .note-box p {
+            color: #78350f;
+            line-height: 1.6;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔒 Security Awareness Check-Up</h1>
+            <p>A simple tool to help your organization stay safer online</p>
+            <p style="font-size: 14px; margin-top: 12px; opacity: 0.9;">Answer honest questions about your current practices - no judgment, just helpful guidance!</p>
+        </div>
+
+        <div class="content">
+            <div class="intro">
+                <h2>Welcome! Here's what to expect:</h2>
+                <p><strong>What this is:</strong> A friendly questionnaire about how your organization handles computer and internet security. Think passwords, suspicious emails, policies, that kind of thing.</p>
+                <p><strong>Who should take this:</strong> Anyone familiar with how your organization operates - owner, manager, IT person, or long-time employee.</p>
+                <p><strong>How long it takes:</strong> About 10-15 minutes</p>
+                <p><strong>What you'll get:</strong> A personalized action plan with simple steps to improve your security, explained in plain English.</p>
+            </div>
+
+            <div class="progress-indicator">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-text" id="progressText">0 of 24 questions answered</div>
+
+            <div class="error-message" id="errorMessage">
+                Please answer all questions before viewing your results. Scroll up to find any questions you might have missed!
+            </div>
+
+            <form id="assessmentForm">
+                <!-- Domain 1: Training -->
+                <div class="domain">
+                    <div class="domain-header">
+                        <span class="domain-number">1</span>
+                        <span class="domain-title">Security Training</span>
+                        <div class="domain-description">Let's start with how employees learn about staying safe online</div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">When someone new joins your organization, do they get any training or guidance about security (like creating strong passwords or recognizing suspicious emails)?</div>
+                        <div class="options-container">
+                            <label class="option">
+                                <input type="radio" name="q1_1" value="0" required>
+                                <span class="option-text">No, we don't cover security topics with new hires</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q1_1" value="2">
+                                <span class="option-text">Sometimes - it depends on who's training them</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q1_1" value="4">
+                                <span class="option-text">Yes, every new person gets security training or information</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">After people have been working with you for a while, do they get reminders or updates about security practices?</div>
+                        <div class="options-container">
+                            <label class="option">
+                                <input type="radio" name="q1_2" value="0" required>
+                                <span class="option-text">No, nothing regular - maybe if something goes wrong</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q1_2" value="2">
+                                <span class="option-text">Occasionally - maybe once or twice a year</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q1_2" value="4">
+                                <span class="option-text">Yes, we have regular training or updates (quarterly or more often)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">Do you keep track of who has received security training?</div>
+                        <div class="options-container">
+                            <label class="option">
+                                <input type="radio" name="q1_3" value="0" required>
+                                <span class="option-text">No, we don't track this</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q1_3" value="2">
+                                <span class="option-text">Informally - we have a general idea but no official records</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q1_3" value="4">
+                                <span class="option-text">Yes, we keep records of who completed training and when</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Domain 2: Phishing -->
+                <div class="domain">
+                    <div class="domain-header">
+                        <span class="domain-number">2</span>
+                        <span class="domain-title">Recognizing Suspicious Emails & Scams</span>
+                        <div class="domain-description">This section is about "phishing" - fake emails trying to steal information or money</div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">Do people in your organization know what phishing emails look like and how to spot them?</div>
+                        <div class="helper-text">Examples: fake emails pretending to be from your bank, shipping notices you didn't order, urgent requests from "the boss"</div>
+                        <div class="options-container">
+                            <label class="option">
+                                <input type="radio" name="q2_1" value="0" required>
+                                <span class="option-text">No, most people wouldn't know what to look for</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q2_1" value="2">
+                                <span class="option-text">Some do, some don't - it's hit or miss</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q2_1" value="4">
+                                <span class="option-text">Yes, we've taught people what to look for</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">If someone receives a suspicious email, do they know who to tell or what to do?</div>
+                        <div class="options-container">
+                            <label class="option">
+                                <input type="radio" name="q2_2" value="0" required>
+                                <span class="option-text">No, there's no clear process for reporting these</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q2_2" value="2">
+                                <span class="option-text">Maybe - they'd probably ask around or just delete it</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q2_2" value="4">
+                                <span class="option-text">Yes, everyone knows who to contact about suspicious emails</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">Have you ever tested your team with fake phishing emails to see if they can spot them?</div>
+                        <div class="helper-text">Some organizations send safe test emails to help people practice</div>
+                        <div class="options-container">
+                            <label class="option">
+                                <input type="radio" name="q2_3" value="0" required>
+                                <span class="option-text">No, we've never done this</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q2_3" value="2">
+                                <span class="option-text">We tried it once or twice</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q2_3" value="4">
+                                <span class="option-text">Yes, we do this regularly to keep people sharp</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Domain 3: Policies -->
+                <div class="domain">
+                    <div class="domain-header">
+                        <span class="domain-number">3</span>
+                        <span class="domain-title">Written Rules & Guidelines</span>
+                        <div class="domain-description">This is about having written policies for using computers, internet, and handling data</div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">Does your organization have written rules or policies about computer and internet use?</div>
+                        <div class="helper-text">Things like acceptable use policies, password requirements, how to handle customer data, etc.</div>
+                        <div class="options-container">
+                            <label class="option">
+                                <input type="radio" name="q3_1" value="0" required>
+                                <span class="option-text">No, we don't have anything written down</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q3_1" value="2">
+                                <span class="option-text">We have some basic policies, but they might be outdated</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q3_1" value="4">
+                                <span class="option-text">Yes, we have clear written policies that are up to date</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">Can employees easily find and read these policies when they need them?</div>
+                        <div class="options-container">
+                            <label class="option">
+                                <input type="radio" name="q3_2" value="0" required>
+                                <span class="option-text">No / We don't have policies</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q3_2" value="2">
+                                <span class="option-text">They exist somewhere, but people would have to hunt for them</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q3_2" value="4">
+                                <span class="option-text">Yes, they're easy to access (shared drive, employee handbook, etc.)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">Do you review and update these policies regularly?</div>
+                        <div class="options-container">
+                            <label class="option">
+                                <input type="radio" name="q3_3" value="0" required>
+                                <span class="option-text">No / We don't have policies</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q3_3" value="2">
+                                <span class="option-text">Rarely - maybe when something goes wrong</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q3_3" value="4">
+                                <span class="option-text">Yes, we review them at least once a year</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Domain 4: Incident Response -->
+                <div class="domain">
+                    <div class="domain-header">
+                        <span class="domain-number">4</span>
+                        <span class="domain-title">Handling Security Problems</span>
+                        <div class="domain-description">What happens if something goes wrong - like a virus, data breach, or ransomware</div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">Do you have a plan for what to do if there's a security incident (like ransomware, a data breach, or someone's account gets hacked)?</div>
+                        <div class="options-container">
+                            <label class="option">
+                                <input type="radio" name="q4_1" value="0" required>
+                                <span class="option-text">No, we'd have to figure it out on the spot</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q4_1" value="2">
+                                <span class="option-text">We have a general idea, but nothing written down</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q4_1" value="4">
+                                <span class="option-text">Yes, we have a written plan that says who does what</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">Does everyone know who to contact immediately if something security-related goes wrong?</div>
+                        <div class="helper-text">Like having a "break glass in case of emergency" contact list</div>
+                        <div class="options-container">
+                            <label class="option">
+                                <input type="radio" name="q4_2" value="0" required>
+                                <span class="option-text">No, people would have to figure out who to call</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q4_2" value="2">
+                                <span class="option-text">Some people know, but not everyone</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q4_2" value="4">
+                                <span class="option-text">Yes, everyone knows who to contact (IT person, boss, etc.)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">Have you ever practiced or tested your response to a security incident?</div>
+                        <div class="helper-text">Like a fire drill, but for cybersecurity</div>
+                        <div class="options-container">
+                            <label class="option">
+                                <input type="radio" name="q4_3" value="0" required>
+                                <span class="option-text">No, we've never practiced this</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q4_3" value="2">
+                                <span class="option-text">We talked through it once</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q4_3" value="4">
+                                <span class="option-text">Yes, we practice regularly (at least once a year)</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Domain 5: MFA and Passwords -->
+                <div class="domain">
+                    <div class="domain-header">
+                        <span class="domain-number">5</span>
+                        <span class="domain-title">Passwords & Extra Security Steps</span>
+                        <div class="domain-description">This covers passwords and "two-factor authentication" (getting a code on your phone when logging in)</div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">Do you require "extra steps" to log into important systems (like a code sent to a phone or email)?</div>
+                        <div class="helper-text">This is called "two-factor authentication" or "multi-factor authentication" (MFA)</div>
+                        <div class="options-container">
+                            <label class="option">
+                                <input type="radio" name="q5_1" value="0" required>
+                                <span class="option-text">No, just username and password for everything</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q5_1" value="2">
+                                <span class="option-text">Yes, for some systems (like email or banking)</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q5_1" value="4">
+                                <span class="option-text">Yes, required for all important systems</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">Do you have rules about creating strong passwords?</div>
+                        <div class="helper-text">Like requiring a certain length or using letters, numbers, and symbols</div>
+                        <div class="options-container">
+                            <label class="option">
+                                <input type="radio" name="q5_2" value="0" required>
+                                <span class="option-text">No, people can use whatever password they want</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q5_2" value="2">
+                                <span class="option-text">We suggest guidelines, but don't enforce them</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q5_2" value="4">
+                                <span class="option-text">Yes, the system won't accept weak passwords</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">Do you encourage or require the use of password managers?</div>
+                        <div class="helper-text">Apps like LastPass, 1Password, or Bitwarden that remember passwords securely</div>
+                        <div class="options-container">
+                            <label class="option">
+                                <input type="radio" name="q5_3" value="0" required>
+                                <span class="option-text">No, we've never discussed this</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q5_3" value="2">
+                                <span class="option-text">We recommend them, but it's optional</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q5_3" value="4">
+                                <span class="option-text">Yes, we require password managers for work accounts</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Domain 6: BYOD -->
+                <div class="domain">
+                    <div class="domain-header">
+                        <span class="domain-number">6</span>
+                        <span class="domain-title">Personal Devices & Working Remotely</span>
+                        <div class="domain-description">This is about using personal phones, laptops, or tablets for work</div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">Do people use their personal phones, tablets, or computers for work?</div>
+                        <div class="options-container">
+                            <label class="option">
+                                <input type="radio" name="q6_1" value="0" required>
+                                <span class="option-text">Yes, and we don't have any rules about it</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q6_1" value="2">
+                                <span class="option-text">Yes, and we have some basic guidelines</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q6_1" value="4">
+                                <span class="option-text">Yes, and we have clear policies and security requirements</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q6_1" value="4">
+                                <span class="option-text">No, everyone uses company-provided devices</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">If people use personal devices for work, do you require basic security measures?</div>
+                        <div class="helper-text">Like requiring a PIN/password to unlock the phone, or keeping software updated</div>
+                        <div class="options-container">
+                            <label class="option">
+                                <input type="radio" name="q6_2" value="0" required>
+                                <span class="option-text">No, we don't require anything</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q6_2" value="2">
+                                <span class="option-text">We suggest it, but don't enforce it</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q6_2" value="4">
+                                <span class="option-text">Yes, we require specific security measures</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">What happens to work data on personal devices when someone leaves the organization?</div>
+                        <div class="options-container">
+                            <label class="option">
+                                <input type="radio" name="q6_3" value="0" required>
+                                <span class="option-text">Nothing - we trust people to delete it themselves</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q6_3" value="2">
+                                <span class="option-text">We ask them to delete it, but can't verify</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q6_3" value="4">
+                                <span class="option-text">We can remotely remove work data from their device</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Domain 7: Leadership -->
+                <div class="domain">
+                    <div class="domain-header">
+                        <span class="domain-number">7</span>
+                        <span class="domain-title">Leadership & Management Support</span>
+                        <div class="domain-description">This looks at whether owners/managers take security seriously and set a good example</div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">Do the owners/managers/leaders follow the same security practices they expect from employees?</div>
+                        <div class="helper-text">Do they "practice what they preach"?</div>
+                        <div class="options-container">
+                            <label class="option">
+                                <input type="radio" name="q7_1" value="0" required>
+                                <span class="option-text">No, leaders often skip security steps</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q7_1" value="2">
+                                <span class="option-text">Sometimes - it's inconsistent</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q7_1" value="4">
+                                <span class="option-text">Yes, leaders consistently model good security practices</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">Do leaders talk about the importance of security and make it a priority?</div>
+                        <div class="options-container">
+                            <label class="option">
+                                <input type="radio" name="q7_2" value="0" required>
+                                <span class="option-text">No, security is rarely mentioned</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q7_2" value="2">
+                                <span class="option-text">Occasionally - usually only after a problem</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q7_2" value="4">
+                                <span class="option-text">Yes, leaders regularly emphasize security in meetings and communications</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">Are resources (time, money, tools) allocated for security improvements?</div>
+                        <div class="options-container">
+                            <label class="option">
+                                <input type="radio" name="q7_3" value="0" required>
+                                <span class="option-text">No, there's no budget or time for security</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q7_3" value="2">
+                                <span class="option-text">Minimal resources - we do the bare minimum</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q7_3" value="4">
+                                <span class="option-text">Yes, leadership actively invests in security</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Domain 8: Communications -->
+                <div class="domain">
+                    <div class="domain-header">
+                        <span class="domain-number">8</span>
+                        <span class="domain-title">Security Reminders & Updates</span>
+                        <div class="domain-description">This is about keeping security top-of-mind through regular communication</div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">How often do you send out security tips, reminders, or updates to employees?</div>
+                        <div class="helper-text">Like emails, newsletters, or announcements about current threats or best practices</div>
+                        <div class="options-container">
+                            <label class="option">
+                                <input type="radio" name="q8_1" value="0" required>
+                                <span class="option-text">Never or almost never</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q8_1" value="2">
+                                <span class="option-text">Once in a while (maybe a few times a year)</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q8_1" value="4">
+                                <span class="option-text">Regularly (monthly or more often)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">When you send security information, is it timely and relevant?</div>
+                        <div class="helper-text">Like warning about current scams going around, seasonal threats (tax season phishing), etc.</div>
+                        <div class="options-container">
+                            <label class="option">
+                                <input type="radio" name="q8_2" value="0" required>
+                                <span class="option-text">We don't send security communications</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q8_2" value="2">
+                                <span class="option-text">Sometimes - it's hit or miss</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q8_2" value="4">
+                                <span class="option-text">Yes, we share current and relevant security information</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <div class="question-text">Do you use multiple ways to communicate about security?</div>
+                        <div class="helper-text">Like email, meetings, posters, chat messages, etc. - not just one method</div>
+                        <div class="options-container">
+                            <label class="option">
+                                <input type="radio" name="q8_3" value="0" required>
+                                <span class="option-text">We don't communicate about security</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q8_3" value="2">
+                                <span class="option-text">Just one way (usually email)</span>
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q8_3" value="4">
+                                <span class="option-text">Yes, we use multiple channels to reach everyone</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="submit-section">
+                    <p style="color: #4a5568; margin-bottom: 16px; font-size: 15px;">
+                        Great job! Review your answers, then click below to see your personalized results and recommendations.
+                    </p>
+                    <button type="submit" class="submit-btn" id="submitBtn">View My Results & Action Plan</button>
+                </div>
+            </form>
+
+            <div class="results" id="results">
+                <!-- Results will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Question mapping to domains
+        const questionMapping = {
+            domain1: ['q1_1', 'q1_2', 'q1_3'],
+            domain2: ['q2_1', 'q2_2', 'q2_3'],
+            domain3: ['q3_1', 'q3_2', 'q3_3'],
+            domain4: ['q4_1', 'q4_2', 'q4_3'],
+            domain5: ['q5_1', 'q5_2', 'q5_3'],
+            domain6: ['q6_1', 'q6_2', 'q6_3'],
+            domain7: ['q7_1', 'q7_2', 'q7_3'],
+            domain8: ['q8_1', 'q8_2', 'q8_3']
+        };
+
+        const domainNames = {
+            domain1: 'Security Training',
+            domain2: 'Phishing Awareness',
+            domain3: 'Policies & Procedures',
+            domain4: 'Incident Response',
+            domain5: 'MFA & Passwords',
+            domain6: 'BYOD & Remote Work',
+            domain7: 'Leadership Engagement',
+            domain8: 'Security Communications'
+        };
+
+        // Track progress
+        function updateProgress() {
+            const totalQuestions = 24;
+            const answeredQuestions = document.querySelectorAll('input[type="radio"]:checked').length;
+            
+            const progress = (answeredQuestions / totalQuestions) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressText').textContent = `${answeredQuestions} of ${totalQuestions} questions answered`;
+        }
+
+        // Add event listeners to radio buttons
+        document.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                // Update selected styling
+                const allOptions = this.closest('.question').querySelectorAll('.option');
+                allOptions.forEach(opt => opt.classList.remove('selected'));
+                this.closest('.option').classList.add('selected');
+                
+                // Update progress
+                updateProgress();
+            });
+        });
+
+        // Handle form submission
+        document.getElementById('assessmentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Check if all questions are answered
+            const totalQuestions = 24;
+            const answeredQuestions = document.querySelectorAll('input[type="radio"]:checked').length;
+
+            if (answeredQuestions < totalQuestions) {
+                document.getElementById('errorMessage').style.display = 'block';
+                document.getElementById('errorMessage').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+
+            // Hide error message
+            document.getElementById('errorMessage').style.display = 'none';
+
+            // Calculate scores for each domain
+            const domainScores = {};
+            
+            Object.keys(questionMapping).forEach(domain => {
+                const questions = questionMapping[domain];
+                let total = 0;
+                
+                questions.forEach(qName => {
+                    const selected = document.querySelector(`input[name="${qName}"]:checked`);
+                    if (selected) {
+                        total += parseInt(selected.value);
+                    }
+                });
+                
+                // Average score for the domain (max 12 points / 3 = 4.0)
+                domainScores[domain] = (total / 12) * 4;
+            });
+
+            // Calculate overall average
+            const totalScore = Object.values(domainScores).reduce((a, b) => a + b, 0);
+            const average = (totalScore / 8).toFixed(2);
+
+            // Determine maturity level
+            let maturityLevel, maturityColor;
+            if (average < 1.5) {
+                maturityLevel = 'Just Getting Started';
+                maturityColor = '#ef4444';
+            } else if (average < 2.0) {
+                maturityLevel = 'Building Foundation';
+                maturityColor = '#f97316';
+            } else if (average < 2.5) {
+                maturityLevel = 'Basic Protection';
+                maturityColor = '#f59e0b';
+            } else if (average < 3.0) {
+                maturityLevel = 'Good Progress';
+                maturityColor = '#10b981';
+            } else if (average < 3.5) {
+                maturityLevel = 'Strong Security';
+                maturityColor = '#059669';
+            } else {
+                maturityLevel = 'Security Leader';
+                maturityColor = '#047857';
+            }
+
+            // Generate results
+            generateResults(domainScores, average, maturityLevel, maturityColor);
+
+            // Hide form, show results
+            document.getElementById('assessmentForm').style.display = 'none';
+            document.getElementById('results').style.display = 'block';
+            document.querySelector('.progress-indicator').style.display = 'none';
+            document.getElementById('progressText').style.display = 'none';
+            
+            // Scroll to results
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        function generateResults(domainScores, average, maturityLevel, maturityColor) {
+            const resultsDiv = document.getElementById('results');
+
+            // Categorize domains
+            const strengths = [];
+            const weaknesses = [];
+            const improvements = [];
+
+            Object.keys(domainScores).forEach(domain => {
+                const score = domainScores[domain];
+                if (score >= 3) strengths.push({ name: domainNames[domain], score: score.toFixed(1), key: domain });
+                else if (score <= 1.5) weaknesses.push({ name: domainNames[domain], score: score.toFixed(1), key: domain });
+                else improvements.push({ name: domainNames[domain], score: score.toFixed(1), key: domain });
+            });
+
+            // Build results HTML
+            let html = `
+                <div class="score-card" style="background: ${maturityColor}">
+                    <div class="score-label">Your Security Maturity Score</div>
+                    <div class="score-value">${average} / 4.0</div>
+                    <div class="maturity-level">${maturityLevel}</div>
+                </div>
+
+                <div class="note-box">
+                    <strong>📊 What This Score Means:</strong>
+                    <p>${getScoreInterpretation(average)}</p>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">
+                        <span class="section-icon">📊</span>
+                        Your Score Breakdown
+                    </div>
+            `;
+
+            Object.keys(domainScores).forEach(domain => {
+                const score = domainScores[domain].toFixed(1);
+                html += `
+                    <div class="domain-score">
+                        <div class="domain-name">${domainNames[domain]}</div>
+                        <div class="domain-score-value">${score} / 4.0</div>
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+
+            // Show different sections based on what they have
+            if (strengths.length > 0) {
+                html += `
+                    <div class="section">
+                        <div class="section-title">
+                            <span class="section-icon">✅</span>
+                            What You're Doing Well
+                        </div>
+                        <div class="recommendation strength">
+                            <h3><span class="badge badge-green">KEEP IT UP!</span>Your Strong Areas</h3>
+                            <p>Great job! You're doing well in these areas:</p>
+                            <ul>
+                `;
+                strengths.forEach(s => {
+                    html += `<li><strong>${s.name}</strong> (${s.score}/4.0) - You have good practices here. Keep maintaining these standards!</li>`;
+                });
+                html += `
+                            </ul>
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (weaknesses.length > 0) {
+                html += `
+                    <div class="section">
+                        <div class="section-title">
+                            <span class="section-icon">🎯</span>
+                            Your Biggest Opportunities
+                        </div>
+                        <div class="recommendation weakness">
+                            <h3><span class="badge badge-red">PRIORITY</span>Start Here First</h3>
+                            <p>These areas need attention to reduce your risk. Don't worry - we'll show you simple ways to improve!</p>
+                            <ul>
+                `;
+                weaknesses.forEach(w => {
+                    html += `<li><strong>${w.name}</strong> (${w.score}/4.0) - Focus here for the biggest security boost.</li>`;
+                });
+                html += `
+                            </ul>
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (improvements.length > 0) {
+                html += `
+                    <div class="section">
+                        <div class="section-title">
+                            <span class="section-icon">📈</span>
+                            Next Level: Growth Areas
+                        </div>
+                        <div class="recommendation improvement">
+                            <h3><span class="badge badge-yellow">GROWING</span>Build on Your Foundation</h3>
+                            <p>You've started working on these areas. Here's how to take them to the next level:</p>
+                            <ul>
+                `;
+                improvements.forEach(i => {
+                    html += `<li><strong>${i.name}</strong> (${i.score}/4.0) - You have basics in place. Time to strengthen them!</li>`;
+                });
+                html += `
+                            </ul>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Add personalized recommendations
+            html += generatePersonalizedRecommendations(domainScores, weaknesses);
+
+            // Add roadmap
+            html += generate90DayRoadmap(domainScores);
+
+            html += `
+                <div class="submit-section">
+                    <button class="reset-btn" onclick="resetAssessment()">Take Assessment Again</button>
+                </div>
+            `;
+
+            resultsDiv.innerHTML = html;
+        }
+
+        function getScoreInterpretation(average) {
+            if (average < 1.5) {
+                return "You're just getting started with security practices. The good news is there are many quick, easy wins you can implement right away to dramatically improve your protection!";
+            } else if (average < 2.0) {
+                return "You have some basic security practices in place, but there's room for improvement. You're building a foundation - now let's make it stronger!";
+            } else if (average < 2.5) {
+                return "You have basic protection in place! You're doing better than many small organizations. Now it's about consistency and filling in the gaps.";
+            } else if (average < 3.0) {
+                return "Great progress! You're ahead of most small organizations. Focus on making your good practices more consistent and documented.";
+            } else if (average < 3.5) {
+                return "Excellent! You have strong security practices. You're doing what many larger organizations aspire to. Keep refining and stay vigilant!";
+            } else {
+                return "Outstanding! You're a security leader among small organizations. Your practices are mature and well-implemented. Focus on maintaining and continuing to evolve.";
+            }
+        }
+
+        function generatePersonalizedRecommendations(scores, weaknesses) {
+            let html = `
+                <div class="section">
+                    <div class="section-title">
+                        <span class="section-icon">💡</span>
+                        Your Personalized Action Plan
+                    </div>
+                    
+                    <div class="note-box">
+                        <strong>🎯 How to Use These Recommendations:</strong>
+                        <p>Don't try to do everything at once! Pick 1-2 things to work on this month. Small, consistent improvements are better than big plans that never happen.</p>
+                    </div>
+            `;
+
+            // Universal quick wins that benefit everyone
+            html += `
+                <div class="recommendation">
+                    <h3>Quick Wins for Everyone (Start Here!)</h3>
+                    <p>These three actions will give you the biggest security boost for the least effort:</p>
+                    <div class="implementation-steps">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4>Turn on the "Extra Security Step" for Email (Score: ${scores.domain5.toFixed(1)}/4.0)</h4>
+                                <p>This is called "two-factor authentication" or "MFA." It means even if someone steals your password, they still can't get into your email because they need the code sent to your phone. This single step stops 99% of account hacks!</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4>Create a One-Page "Security Cheat Sheet" (Score: ${scores.domain3.toFixed(1)}/4.0)</h4>
+                                <p>Write down the most important rules on one page: how to create good passwords, what to do with suspicious emails, who to call if something goes wrong. Post it where people can see it!</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4>Have a 5-Minute Security Talk Each Quarter (Score: ${scores.domain1.toFixed(1)}/4.0)</h4>
+                                <p>You don't need fancy training programs. Just spend 5 minutes in your regular team meeting talking about one security topic. Show a recent scam email, remind people how to report suspicious stuff, or share a quick tip.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Specific recommendations based on weak areas
+            if (scores.domain1 < 2.5) {
+                html += `
+                    <div class="recommendation">
+                        <h3>Improving Security Training (Your Score: ${scores.domain1.toFixed(1)}/4.0)</h3>
+                        <p><strong>The Problem:</strong> Without any training, people don't know what's expected or how to stay safe.</p>
+                        <p><strong>Easy Solutions:</strong></p>
+                        <ul>
+                            <li><strong>For new hires:</strong> Create a simple 1-page checklist they get on day one: "How to Stay Safe Here" with basics like password rules, who handles IT, and how to report problems</li>
+                            <li><strong>For everyone else:</strong> Spend 5 minutes in your quarterly staff meetings on one security topic - that's only 20 minutes a year!</li>
+                            <li><strong>Make it stick:</strong> Share real examples - "Look at this phishing email we got last week. See how you can tell it's fake?"</li>
+                            <li><strong>No-cost option:</strong> Send a one-sentence security tip in your regular newsletter or group chat once a month</li>
+                        </ul>
+                    </div>
+                `;
+            }
+
+            if (scores.domain2 < 2.5) {
+                html += `
+                    <div class="recommendation">
+                        <h3>Spotting Scam Emails (Your Score: ${scores.domain2.toFixed(1)}/4.0)</h3>
+                        <p><strong>The Problem:</strong> Phishing emails (fake messages trying to steal information) are the #1 way hackers get in.</p>
+                        <p><strong>Easy Solutions:</strong></p>
+                        <ul>
+                            <li><strong>Create a "report" button:</strong> Make a simple email address like suspicious@yourcompany.com where people can forward weird emails</li>
+                            <li><strong>Share real examples:</strong> When someone gets a phishing email, forward it to everyone (remove any personal info first) and explain what made it suspicious</li>
+                            <li><strong>Make it safe to report:</strong> Thank people publicly when they report suspicious emails - never make them feel dumb for asking!</li>
+                            <li><strong>Teach the basics:</strong> Urgent requests + clicking links + asking for passwords = RED FLAG</li>
+                            <li><strong>Practice makes perfect:</strong> Consider free tools like KnowBe4's free phishing test (send fake practice emails to see who clicks)</li>
+                        </ul>
+                    </div>
+                `;
+            }
+
+            if (scores.domain3 < 2.5) {
+                html += `
+                    <div class="recommendation">
+                        <h3>Writing Down Your Rules (Your Score: ${scores.domain3.toFixed(1)}/4.0)</h3>
+                        <p><strong>The Problem:</strong> Without written policies, everyone makes their own decisions about security.</p>
+                        <p><strong>Easy Solutions:</strong></p>
+                        <ul>
+                            <li><strong>Start simple:</strong> You don't need a 50-page document. Start with one page covering: acceptable internet use, password basics, and handling customer/employee data</li>
+                            <li><strong>Use plain English:</strong> Write like you're explaining it to a friend, not a lawyer</li>
+                            <li><strong>Make it accessible:</strong> Put it somewhere everyone can find it - shared drive, employee handbook, posted in the breakroom</li>
+                            <li><strong>Keep it current:</strong> Set a calendar reminder to review it once a year</li>
+                            <li><strong>Free templates exist:</strong> Search for "small business acceptable use policy template" - adapt one rather than starting from scratch</li>
+                        </ul>
+                    </div>
+                `;
+            }
+
+            if (scores.domain4 < 2.5) {
+                html += `
+                    <div class="recommendation">
+                        <h3>Having a Plan for When Things Go Wrong (Your Score: ${scores.domain4.toFixed(1)}/4.0)</h3>
+                        <p><strong>The Problem:</strong> When a crisis hits (ransomware, data breach, etc.), you don't want to be figuring things out on the fly.</p>
+                        <p><strong>Easy Solutions:</strong></p>
+                        <ul>
+                            <li><strong>Create a contact list:</strong> One page with names and phone numbers - who to call immediately (IT person, owner, cyber insurance, etc.)</li>
+                            <li><strong>Know your backups:</strong> Where are they? How often do they run? Practice restoring from backup once</li>
+                            <li><strong>Have a practice run:</strong> Spend 30 minutes in a meeting asking "What if we got hit with ransomware tomorrow - what would we do?"</li>
+                            <li><strong>Keep it offline:</strong> Print this info and keep a copy somewhere not connected to your computers - when systems are down, you need it!</li>
+                            <li><strong>Check your insurance:</strong> Do you have cyber insurance? If so, they have a hotline to call - add it to your list!</li>
+                        </ul>
+                    </div>
+                `;
+            }
+
+            if (scores.domain5 < 2.5) {
+                html += `
+                    <div class="recommendation">
+                        <h3>Strengthening Passwords & Login Security (Your Score: ${scores.domain5.toFixed(1)}/4.0)</h3>
+                        <p><strong>The Problem:</strong> Weak passwords are like leaving your front door unlocked.</p>
+                        <p><strong>Easy Solutions:</strong></p>
+                        <ul>
+                            <li><strong>Require the "extra step" (MFA):</strong> Turn this on for email first, then cloud apps. This is THE single most important thing you can do!</li>
+                            <li><strong>Make passwords longer, not complex:</strong> "ChocolateRainbow!Sunshine27" is better than "P@ssw0rd" - length matters more than symbols</li>
+                            <li><strong>Get a password manager:</strong> Apps like Bitwarden (free), LastPass, or 1Password remember all your passwords securely. You only need to remember one master password</li>
+                            <li><strong>No password sharing:</strong> Each person should have their own login - never share passwords, even with coworkers you trust</li>
+                            <li><strong>Ask your email provider for help:</strong> Call Google/Microsoft/whoever provides your email and ask them to help you turn on two-factor authentication</li>
+                        </ul>
+                    </div>
+                `;
+            }
+
+            if (scores.domain6 < 2.5) {
+                html += `
+                    <div class="recommendation">
+                        <h3>Securing Personal Phones & Computers Used for Work (Your Score: ${scores.domain6.toFixed(1)}/4.0)</h3>
+                        <p><strong>The Problem:</strong> When people use personal devices for work, you lose control of your data if the device is lost, stolen, or the person leaves.</p>
+                        <p><strong>Easy Solutions:</strong></p>
+                        <ul>
+                            <li><strong>Require screen locks:</strong> Everyone using a personal device for work must have a PIN, password, or fingerprint to unlock it - no exceptions</li>
+                            <li><strong>Use cloud tools:</strong> Keep work files in Google Drive, Dropbox, or Microsoft OneDrive (not saved directly on the device) - easier to control and remove</li>
+                            <li><strong>Separate work and personal:</strong> Use work-specific apps for work stuff (like Outlook for work email instead of the default mail app)</li>
+                            <li><strong>Have an exit plan:</strong> When someone leaves, immediately change passwords they knew and remove their access from cloud services</li>
+                            <li><strong>Consider MDM for larger teams:</strong> If you have more than 20 people, Mobile Device Management software (like Microsoft Intune) lets you remotely remove work data</li>
+                        </ul>
+                    </div>
+                `;
+            }
+
+            if (scores.domain7 < 2.5) {
+                html += `
+                    <div class="recommendation">
+                        <h3>Getting Leadership on Board (Your Score: ${scores.domain7.toFixed(1)}/4.0)</h3>
+                        <p><strong>The Problem:</strong> When leadership doesn't follow security practices, employees won't either. "Do as I say, not as I do" doesn't work.</p>
+                        <p><strong>Easy Solutions:</strong></p>
+                        <ul>
+                            <li><strong>Leaders go first:</strong> Owners/managers should be the first to use MFA, password managers, and other security tools - set the example!</li>
+                            <li><strong>Talk about it:</strong> Mention security in team meetings - even just "Good job on reporting that phishing email, everyone!" shows it matters</li>
+                            <li><strong>Allocate resources:</strong> Security doesn't have to be expensive, but it needs SOME time and money - even $50/month for tools makes a difference</li>
+                            <li><strong>Praise, don't punish:</strong> When someone makes a security mistake, use it as a teaching moment - never shame people for reporting issues</li>
+                            <li><strong>Make someone responsible:</strong> Assign one person (even part-time) to be the "security champion" - give them time to work on it</li>
+                        </ul>
+                    </div>
+                `;
+            }
+
+            if (scores.domain8 < 2.5) {
+                html += `
+                    <div class="recommendation">
+                        <h3>Keeping Security Top-of-Mind (Your Score: ${scores.domain8.toFixed(1)}/4.0)</h3>
+                        <p><strong>The Problem:</strong> Without regular reminders, people forget about security until something goes wrong.</p>
+                        <p><strong>Easy Solutions:</strong></p>
+                        <ul>
+                            <li><strong>Monthly tip:</strong> Send ONE security tip per month - just 1-2 sentences. "Reminder: Never click links in emails about package deliveries you didn't order!"</li>
+                            <li><strong>Use multiple channels:</strong> Email, Slack/Teams messages, posters in breakroom, verbal reminders in meetings - repetition helps!</li>
+                            <li><strong>Tie to current events:</strong> Tax season = remind about IRS scams; Holiday season = remind about fake shipping notices; Recent news = "Hey, did you hear about that company that got hacked?"</li>
+                            <li><strong>Make it relevant:</strong> Share actual scam emails your organization receives (removing identifying info) - "Look what we got yesterday!"</li>
+                            <li><strong>Keep it positive:</strong> Focus on "here's how to stay safe" not "be afraid of everything" - positive messages work better</li>
+                        </ul>
+                    </div>
+                `;
+            }
+
+            html += '</div>';
+            return html;
+        }
+
+        function generate90DayRoadmap(scores) {
+            // Find the lowest scoring domain to prioritize
+            let lowestDomain = null;
+            let lowestScore = 5;
+            Object.keys(scores).forEach(domain => {
+                if (scores[domain] < lowestScore) {
+                    lowestScore = scores[domain];
+                    lowestDomain = domain;
+                }
+            });
+
+            return `
+                <div class="section">
+                    <div class="section-title">
+                        <span class="section-icon">🗺️</span>
+                        Your 90-Day Action Plan
+                    </div>
+
+                    <div class="note-box">
+                        <strong>⏱️ Why 90 Days?</strong>
+                        <p>Research shows small organizations succeed with security when they take small, specific actions over time rather than trying to do everything at once. This plan is designed to fit into your busy schedule!</p>
+                    </div>
+
+                    <div class="recommendation">
+                        <h3>Month 1: Quick Wins (Days 1-30)</h3>
+                        <div class="implementation-steps">
+                            <div class="step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h4>Week 1: Turn On Email Protection</h4>
+                                    <p>Enable two-factor authentication (the "extra step") on all work email accounts. Call your email provider if you need help - they'll walk you through it. This alone stops 99% of email hacks!</p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h4>Week 2: Create Your Contact List</h4>
+                                    <p>Make a one-page "Who to Call" list for emergencies. Include: IT person, owner/manager, cyber insurance hotline (if you have it). Print it and keep a copy handy.</p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h4>Week 3: Write Your One-Page Policy</h4>
+                                    <p>Create a simple "Computer & Internet Use Policy" covering basics: password rules, reporting suspicious emails, personal device expectations. Keep it to one page in plain English!</p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <h4>Week 4: First Team Talk</h4>
+                                    <p>Spend 5 minutes in your regular staff meeting talking about security. Share the new policy, show everyone your "extra step" on email, and explain how to report suspicious stuff.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="recommendation">
+                        <h3>Month 2: Building Habits (Days 31-60)</h3>
+                        <div class="implementation-steps">
+                            <div class="step">
+                                <div class="step-number">5</div>
+                                <div class="step-content">
+                                    <h4>Week 5: Extend "Extra Steps" Security</h4>
+                                    <p>Now that email has two-factor authentication, add it to other important systems: your accounting software, customer database, cloud storage. Do one system per week.</p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">6</div>
+                                <div class="step-content">
+                                    <h4>Week 6: Start Monthly Security Tips</h4>
+                                    <p>Send your first monthly security reminder. Keep it short - one sentence about a current threat. "Heads up: We're seeing lots of fake package delivery emails this week!"</p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">7</div>
+                                <div class="step-content">
+                                    <h4>Week 7: Review Your Backups</h4>
+                                    <p>Check that your backups are actually working. When was the last backup? Where is it stored? Try restoring one file from backup to make sure it works. Fix any issues you find.</p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">8</div>
+                                <div class="step-content">
+                                    <h4>Week 8: Address Your Weakest Area</h4>
+                                    <p>Look at your lowest-scoring area from this assessment. Pick ONE specific action from the recommendations and do it this week. ${lowestDomain ? 'Focus on: ' + domainNames[lowestDomain] : ''}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="recommendation">
+                        <h3>Month 3: Making It Stick (Days 61-90)</h3>
+                        <div class="implementation-steps">
+                            <div class="step">
+                                <div class="step-number">9</div>
+                                <div class="step-content">
+                                    <h4>Week 9: Practice Your Emergency Plan</h4>
+                                    <p>Spend 15 minutes in a meeting asking "What if?" - What if we got ransomware? What if someone's laptop was stolen? Walk through your contact list and backup process.</p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">10</div>
+                                <div class="step-content">
+                                    <h4>Week 10: Set Up New Hire Security</h4>
+                                    <p>Create a simple checklist for new employees covering security basics. Even if you don't hire often, having it ready ensures nobody starts without knowing the rules.</p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">11</div>
+                                <div class="step-content">
+                                    <h4>Week 11: Second Quarterly Security Talk</h4>
+                                    <p>Another 5-minute team talk about security. This time, share a real example of a phishing email or scam. Ask: "How can you tell this is fake?" Make it interactive!</p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">12</div>
+                                <div class="step-content">
+                                    <h4>Week 12: Celebrate & Reassess</h4>
+                                    <p>Take this assessment again to see your progress! Celebrate improvements with your team. Then pick 1-2 new things to work on for the next 90 days. Keep the momentum going!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="note-box">
+                        <strong>🎯 The Secret to Success:</strong>
+                        <p>The organizations that succeed don't try to do everything perfectly. They pick a few specific things, do them consistently, and build from there. You've got this! Start with week 1 and take it one step at a time.</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function resetAssessment() {
+            // Reset form
+            document.getElementById('assessmentForm').reset();
+            document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            
+            // Show form, hide results
+            document.getElementById('assessmentForm').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+            document.querySelector('.progress-indicator').style.display = 'block';
+            document.getElementById('progressText').style.display = 'block';
+            
+            // Reset progress bar
+            document.getElementById('progressBar').style.width = '0%';
+            document.getElementById('progressText').textContent = '0 of 24 questions answered';
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
